@@ -1,0 +1,22 @@
+[
+  {
+    "id": "T1190",
+    "name": "Exploit Public-Facing Application",
+    "description": "Adversaries may attempt to take advantage of a weakness in an Internet-facing computer or program using software, data, or commands in order to cause unintended or unanticipated behavior."
+  },
+  {
+    "id": "T1078",
+    "name": "Valid Accounts",
+    "description": "Adversaries may obtain and abuse credentials of existing accounts as a means of gaining Initial Access, Persistence, Privilege Escalation, or Defense Evasion."
+  },
+  {
+    "id": "T1059",
+    "name": "Command and Scripting Interpreter",
+    "description": "Adversaries may abuse command and script interpreters to execute commands, scripts, or binaries."
+  },
+  {
+    "id": "T1566",
+    "name": "Phishing",
+    "description": "Adversaries may send phishing messages to gain access to victim systems. All forms of phishing are electronically delivered social engineering."
+  }
+]

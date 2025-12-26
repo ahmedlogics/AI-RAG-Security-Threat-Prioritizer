@@ -1,0 +1,26 @@
+[
+  {
+    "id": "CVE-2021-44228",
+    "description": "Apache Log4j2 JNDI features used in configuration, log messages, and parameters do not protect against attacker controlled LDAP and other JNDI related endpoints. An attacker who can control log messages or log message parameters can execute arbitrary code loaded from LDAP servers when message lookup substitution is enabled.",
+    "severity": "Critical",
+    "cvss": 10.0
+  },
+  {
+    "id": "CVE-2017-0144",
+    "description": "EternalBlue exploits a vulnerability in Microsoft's implementation of the Server Message Block (SMB) protocol. This creates a way for malware to spread to other computers on the network.",
+    "severity": "High",
+    "cvss": 8.1
+  },
+  {
+    "id": "CVE-2023-23397",
+    "description": "Microsoft Outlook Elevation of Privilege Vulnerability allowing NTLM credential theft via custom reminder sound file.",
+    "severity": "Critical",
+    "cvss": 9.8
+  },
+  {
+    "id": "CVE-2023-4863",
+    "description": "Heap buffer overflow in libwebp in Google Chrome prior to 116.0.5845.187 and libwebp 1.3.2 allows a remote attacker to perform an out of bounds memory write via a crafted HTML page.",
+    "severity": "High",
+    "cvss": 8.8
+  }
+]
