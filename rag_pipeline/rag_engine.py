@@ -40,33 +40,47 @@ class RAGEngine:
         
         self.collection.add(ids=ids, documents=documents, metadatas=metadatas)
 
-    def retrieve_context(self, query_text):
-        """
-        Performs Vector Search.
-        Returns: Structured Context + Similarity Score.
-        """
-        results = self.collection.query(
-            query_texts=[query_text],
-            n_results=1 # Top 1 Match
-        )
-        
-        # Check if we actually found something
-        if not results['ids'] or not results['ids'][0]:
-            return None
-            
-        # Extract distance (Lower is better in Chroma usually, but we convert to similarity)
-        distance = results['distances'][0][0]
-        
-        # Threshold Check: If distance is too high, it's a hallucination risk.
-        if distance > 1.5: 
-            return None
+def retrieve_context(self, query_text, detected_patterns=None):
+    """
+    Pattern-aware RAG retrieval to avoid wrong vulnerability matches.
+    """
+    results = self.collection.query(
+        query_texts=[query_text],
+        n_results=3
+    )
 
-        metadata = results['metadatas'][0][0]
-        return {
-            "id": results['ids'][0][0],
-            "vuln_name": metadata['vuln_name'],
-            "mitigation": metadata['mitigation'],
-            "citation": metadata['citation'],
-            "severity": metadata['severity'],
-            "confidence_score": round((1 - distance) * 100, 2) # Rough approximation
-        }
+    if not results['ids'] or not results['ids'][0]:
+        return None
+
+    best_match = None
+    best_score = 0
+
+    for i in range(len(results['ids'][0])):
+        metadata = results['metadatas'][0][i]
+        distance = results['distances'][0][i]
+        similarity = 1 - distance
+
+        # Pattern alignment boost
+        pattern_score = 0
+        if detected_patterns:
+            for p in detected_patterns:
+                if p.lower() in metadata['vuln_name'].lower():
+                    pattern_score += 0.2
+
+        final_score = similarity + pattern_score
+
+        if final_score > best_score:
+            best_score = final_score
+            best_match = {
+                "id": results['ids'][0][i],
+                "vuln_name": metadata['vuln_name'],
+                "mitigation": metadata['mitigation'],
+                "citation": metadata['citation'],
+                "severity": metadata['severity'],
+                "confidence_score": round(final_score * 100, 2)
+            }
+
+    if best_score < 0.35:
+        return None
+
+    return best_match
