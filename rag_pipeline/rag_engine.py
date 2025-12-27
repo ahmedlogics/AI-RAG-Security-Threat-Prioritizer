@@ -40,47 +40,58 @@ class RAGEngine:
         
         self.collection.add(ids=ids, documents=documents, metadatas=metadatas)
 
-def retrieve_context(self, query_text, detected_patterns=None):
-    """
-    Pattern-aware RAG retrieval to avoid wrong vulnerability matches.
-    """
-    results = self.collection.query(
-        query_texts=[query_text],
-        n_results=3
-    )
+    def retrieve_context(self, query_text, detected_patterns=None):
+        """
+        Retrieves context using a Hybrid Search:
+        1. Search by Raw Log
+        2. Search by Detected Patterns (Higher Weight)
+        """
+        search_query = query_text
+        
+        # PRO TIP: If we found patterns (like 'or 1=1'), use those for the search!
+        # This fixes the "No Match" issue for SQL Injection.
+        if detected_patterns and len(detected_patterns) > 0:
+            search_query = f"{' '.join(detected_patterns)} {query_text}"
 
-    if not results['ids'] or not results['ids'][0]:
-        return None
+        results = self.collection.query(
+            query_texts=[search_query],
+            n_results=3
+        )
 
-    best_match = None
-    best_score = 0
+        if not results['ids'] or not results['ids'][0]:
+            return None
 
-    for i in range(len(results['ids'][0])):
-        metadata = results['metadatas'][0][i]
-        distance = results['distances'][0][i]
-        similarity = 1 - distance
+        best_match = None
+        best_score = 0
 
-        # Pattern alignment boost
-        pattern_score = 0
-        if detected_patterns:
-            for p in detected_patterns:
-                if p.lower() in metadata['vuln_name'].lower():
-                    pattern_score += 0.2
+        for i in range(len(results['ids'][0])):
+            metadata = results['metadatas'][0][i]
+            distance = results['distances'][0][i]
+            similarity = 1 - distance
 
-        final_score = similarity + pattern_score
+            # Boost score if the vulnerability name matches our patterns
+            pattern_boost = 0
+            if detected_patterns:
+                for p in detected_patterns:
+                    # If 'sql' is in 'SQL Injection', boost it!
+                    if p.lower() in str(metadata).lower():
+                        pattern_boost += 0.15
 
-        if final_score > best_score:
-            best_score = final_score
-            best_match = {
-                "id": results['ids'][0][i],
-                "vuln_name": metadata['vuln_name'],
-                "mitigation": metadata['mitigation'],
-                "citation": metadata['citation'],
-                "severity": metadata['severity'],
-                "confidence_score": round(final_score * 100, 2)
-            }
+            final_score = similarity + pattern_boost
 
-    if best_score < 0.35:
-        return None
+            if final_score > best_score:
+                best_score = final_score
+                best_match = {
+                    "id": results['ids'][0][i],
+                    "vuln_name": metadata['vuln_name'],
+                    "mitigation": metadata['mitigation'],
+                    "citation": metadata['citation'],
+                    "severity": metadata['severity'],
+                    "confidence_score": round(final_score * 100, 2)
+                }
 
-    return best_match
+        # Lowered threshold to 0.25 to catch Generic SQLi
+        if best_score < 0.25:
+            return None
+
+        return best_match

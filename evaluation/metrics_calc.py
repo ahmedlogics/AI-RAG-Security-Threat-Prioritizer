@@ -1,23 +1,20 @@
-import pandas as pd
+import time
 
 def compute_live_metrics(alert_history):
-    """
-    Computes performance metrics based on the current session's activity.
-    """
     if not alert_history:
         return {
-            "response_time": "0.0s",
-            "accuracy": "100%",
+            "response_time": "—",
             "mitigation_count": 0
         }
 
-    # Simulate response time reduction (Demo visual)
-    base_response_time = 15 # minutes (manual)
-    ai_response_time = 0.5  # minutes (AI)
-    reduction = ((base_response_time - ai_response_time) / base_response_time) * 100
+    times = [
+        a["mitigated_at"] - a["created_at"]
+        for a in alert_history
+    ]
+
+    avg_time = sum(times) / len(times)
 
     return {
-        "response_time": f"-{int(reduction)}%", # "96% Faster"
-        "accuracy": "98.5%", # In a real system, this compares True Positives
+        "response_time": f"{round(avg_time, 2)}s",
         "mitigation_count": len(alert_history)
     }
