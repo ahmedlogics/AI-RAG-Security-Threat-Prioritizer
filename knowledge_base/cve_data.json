@@ -1,26 +1,38 @@
 [
   {
     "id": "CVE-2021-44228",
-    "description": "Apache Log4j2 JNDI features used in configuration, log messages, and parameters do not protect against attacker controlled LDAP and other JNDI related endpoints. An attacker who can control log messages or log message parameters can execute arbitrary code loaded from LDAP servers when message lookup substitution is enabled.",
+    "name": "Log4Shell",
+    "patterns": ["jndi", "ldap", "log4j"],
+    "description": "Remote Code Execution via JNDI injection in Apache Log4j library.",
+    "mitigation": "Upgrade to Log4j 2.17.1+. Set log4j2.formatMsgNoLookups=true.",
     "severity": "Critical",
-    "cvss": 10.0
+    "source_url": "https://nvd.nist.gov/vuln/detail/CVE-2021-44228"
   },
   {
-    "id": "CVE-2017-0144",
-    "description": "EternalBlue exploits a vulnerability in Microsoft's implementation of the Server Message Block (SMB) protocol. This creates a way for malware to spread to other computers on the network.",
+    "id": "OWASP-SQLi",
+    "name": "SQL Injection",
+    "patterns": ["union select", "or 1=1", "drop table", "--"],
+    "description": "Insertion of SQL queries via input data from client to application.",
+    "mitigation": "Use Parameterized Queries (Prepared Statements). Enforce Least Privilege.",
     "severity": "High",
-    "cvss": 8.1
+    "source_url": "https://owasp.org/www-community/attacks/SQL_Injection"
   },
   {
-    "id": "CVE-2023-23397",
-    "description": "Microsoft Outlook Elevation of Privilege Vulnerability allowing NTLM credential theft via custom reminder sound file.",
+    "id": "CWE-22",
+    "name": "Path Traversal",
+    "patterns": ["../", "..%2f", "/etc/passwd"],
+    "description": "Access to files and directories outside the web root.",
+    "mitigation": "Validate file paths. Run service with least privilege.",
+    "severity": "High",
+    "source_url": "https://cwe.mitre.org/data/definitions/22.html"
+  },
+  {
+    "id": "MITRE-T1059",
+    "name": "Command Injection",
+    "patterns": [";/bin/sh", "cmd.exe", "powershell"],
+    "description": "Adversaries may abuse command and script interpreters to execute commands.",
+    "mitigation": "Disable command execution features. Use whitelist validation.",
     "severity": "Critical",
-    "cvss": 9.8
-  },
-  {
-    "id": "CVE-2023-4863",
-    "description": "Heap buffer overflow in libwebp in Google Chrome prior to 116.0.5845.187 and libwebp 1.3.2 allows a remote attacker to perform an out of bounds memory write via a crafted HTML page.",
-    "severity": "High",
-    "cvss": 8.8
+    "source_url": "https://attack.mitre.org/techniques/T1059/"
   }
 ]
